@@ -1,0 +1,41 @@
+
+MiniConnectionPoolManager Changes
+---------------------------------
+
+2016-10-13 chdh
+- Extended recycleConnection() to ignore duplicate call to
+  ConnectionEventListener.connectionClosed(), caused by faulty JDBC
+  driver (SQLite JDBC Driver, Xerial-sqlite-jdbc).
+
+2012-01-24 chdh
+- Error corrected which can occur when using the MySQL JDBC driver.
+  The JDBC driver may call ConnectionEventListener.connectionErrorOccurred()
+  from within PooledConnection.getConnection().
+  This led to an AssertionError in disposeConnection().
+  Thanks to Gilles Duboscq for reporting and analyzing this error.
+
+2011-05-26 chdh
+- New directory structure (Maven compatible).
+- The ConnectionEventListener is now kept registered when a PooledConnection
+  is put into the recycledConnections list. This enables us to get
+  PoolConnectionEventListener.connectionErrorOccurred() events for
+  inactive connections.
+- New methods added:
+   getValidConnection()
+   getInactiveConnections()
+
+2009-08-21 chdh
+- ArrayDeque (which was introduced with change 2009-06-26) replaced
+  by LinkedList, because ArrayDeque is only available since Java 1.6 and we want
+  to keep MiniConnectionPoolManager compatible with Java 1.5.
+
+2009-06-26 chdh
+- Variable recycledConnections changed from Stack to Queue, so that
+  the unused connections are reused in a circular manner.
+  Thanks to Daniel Jurado for the tip.
+
+2008-05-03 chdh
+- Additional licenses added (EPL/MPL).
+
+2007-06-21 chdh (Christian d'Heureuse)
+- Constructor with a timeout parameter added.
